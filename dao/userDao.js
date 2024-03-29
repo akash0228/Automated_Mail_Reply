@@ -22,7 +22,7 @@ const addUser = async (
 
 const getUsers = () => {
   return new Promise((resolve, reject) => {
-    const query = "SELECT * FROM Users";
+    const query = "SELECT * FROM users";
     connection.query(query, (err, rows, fields) => {
       if (err) {
         console.error("Error retrieving users:", err);
@@ -32,6 +32,5 @@ const getUsers = () => {
     });
   });
 };
-
 
 module.exports = { addUser, getUsers };

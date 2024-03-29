@@ -22,7 +22,7 @@ async function categorizeContent(content) {
 
 async function generateReply(content,label) {
   try {
-    const prompt = `create a reply for the customer of mine he is:\n${label}\n in my product and has sent email:\n${content}\n dont include any variable`;
+    const prompt = `create a reply for the customer of mine he is:\n${label}\n in my product and has sent email:\n${content}\n Ensure that the response doesn't contain any placeholders or variables, as it will be an automated email to the user.`;
     const result = await model.generateContent(prompt);
     const response = result.response;
     const reply = response.text();
