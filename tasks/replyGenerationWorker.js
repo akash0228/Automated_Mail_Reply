@@ -1,13 +1,26 @@
 const { Worker } = require("bullmq");
-const Redis = require("ioredis");
+// const Redis = require("ioredis");
 const { generateReply } = require("../services/googleAiService");
 const replyQueue = require("./replyQueue");
 
-const redisClient = new Redis({
-  host: "localhost",
-  port: 6379,
-  maxRetriesPerRequest: null,
+const redis = require('redis');
+const createClient = redis.createClient;
+
+const client = createClient({
+  password: 'Rt3aekDRSkxTFtRHgf5lrlkM1F9nJsg0',
+  socket: {
+      host: 'redis-13488.c305.ap-south-1-1.ec2.cloud.redislabs.com',
+      port: 13488
+  }
 });
+
+// const redisClient = new Redis({
+//   host: "localhost",
+//   port: 6379,
+//   maxRetriesPerRequest: null,
+// });
+
+
 
 const processreplyGenerationJob = async (job) => {
   const emailData = job.data;
@@ -31,7 +44,7 @@ const replyGenerationWorker = new Worker(
       throw err;
     }
   },
-  { connection: redisClient }
+  { connection: client }
 );
 
 module.exports = replyGenerationWorker;

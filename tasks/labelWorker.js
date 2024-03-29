@@ -1,6 +1,9 @@
 const { Worker } = require("bullmq");
 const { google } = require("googleapis");
-const Redis = require("ioredis");
+// const Redis = require("ioredis");
+const redis = require('redis');
+const createClient = redis.createClient;
+
 const {
   getAccessToken,
   refreshAccessToken,
@@ -15,10 +18,18 @@ const {
 } = require("../services/GmailServices");
 const replyGenerationQueue = require("./replyGenerationQueue");
 
-const redisClient = new Redis({
-  host: "localhost",
-  port: 6379,
-  maxRetriesPerRequest: null,
+// const redisClient = new Redis({
+//   host: "localhost",
+//   port: 6379,
+//   maxRetriesPerRequest: null,
+// });
+
+const client = createClient({
+    password: 'Rt3aekDRSkxTFtRHgf5lrlkM1F9nJsg0',
+    socket: {
+        host: 'redis-13488.c305.ap-south-1-1.ec2.cloud.redislabs.com',
+        port: 13488
+    }
 });
 
 const processLabelJob = async (job) => {
@@ -74,7 +85,7 @@ const labelWorker = new Worker(
       throw err;
     }
   },
-  { connection: redisClient }
+  { connection: client }
 );
 
 module.exports = labelWorker;
