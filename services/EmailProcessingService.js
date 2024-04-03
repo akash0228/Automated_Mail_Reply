@@ -3,7 +3,10 @@ const { google } = require("googleapis");
 const dotenv = require("dotenv");
 const labelQueue = require("../tasks/labelQueue");
 const labelWorker = require("../tasks/labelWorker");
-const { createOAuthClient } = require("./OauthGmailService");
+const {
+  createOAuthClient,
+  refreshAccessToken,
+} = require("./OauthGmailService");
 
 dotenv.config();
 
@@ -14,13 +17,15 @@ const redirectUri = process.env.REDIRECTURI;
 // console.log(clientId);
 
 const processEmailsForUser = async (user) => {
-  const token = {
+  const oldtoken = {
     access_token: user.access_token,
     refresh_token: user.refresh_token,
     scope: user.scope,
     token_type: user.token_type,
     expiry_date: user.expiry_date,
   };
+
+  const token = await refreshAccessToken(oldtoken);
 
   const oauth2Client = createOAuthClient(clientId, clientSecret, redirectUri);
   oauth2Client.setCredentials(token);
@@ -51,7 +56,6 @@ const processEmailsForAllUsers = async () => {
   try {
     // console.log("processing");
     const users = await getUsers(); // Implement this function to retrieve users from the database
-
     users.forEach(processEmailsForUser);
   } catch (error) {
     console.error("Error retrieving users:", error);

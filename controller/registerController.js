@@ -8,7 +8,12 @@ const {
   setAccessToken,
 } = require("../services/OauthGmailService");
 const dotenv = require("dotenv");
-const { acquireTokenO, createMSALClient, getUserEmail, generateAuthUrlO } = require("../services/OauthOutlookService");
+const {
+  acquireTokenO,
+  createMSALClient,
+  getUserEmail,
+  generateAuthUrlO,
+} = require("../services/OauthOutlookService");
 
 dotenv.config();
 
@@ -16,7 +21,7 @@ const clientId = process.env.CLIENTID;
 const clientSecret = process.env.CLIENTSECRET;
 const redirectUri = process.env.REDIRECTURI;
 
-const authority=process.env.TENET_URL
+const authority = process.env.TENET_URL;
 
 const oauthServiceGmail = createOAuthClient(
   clientId,
@@ -24,7 +29,7 @@ const oauthServiceGmail = createOAuthClient(
   redirectUri
 );
 
-const msalClient=createMSALClient(authority);
+const msalClient = createMSALClient(authority);
 
 const fetchUserEmail = async () => {
   const gmail = google.gmail({ version: "v1", auth: oauthServiceGmail });
@@ -79,20 +84,18 @@ const callbackController = async (req, res) => {
   }
 };
 
-const outlookCallbackController=async(req,res)=>{
+const outlookCallbackController = async (req, res) => {
   const authCode = req.query.code;
   try {
     const token = await acquireTokenO(authority, authCode);
     console.log(token);
     // const email=await getUserEmail(token);
-  } catch (error) {
-    
-  }
-}
+  } catch (error) {}
+};
 
 module.exports = {
   registerGmailController,
   registerOutlookController,
   callbackController,
-  outlookCallbackController
+  outlookCallbackController,
 };

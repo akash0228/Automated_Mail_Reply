@@ -1,6 +1,8 @@
 const { Queue } = require("bullmq");
+const client=require('../config/redisConfig');
 
-const labelQueue = new Queue("labelQueue");
+
+const labelQueue = new Queue("labelQueue", { connection: client });
 
 labelQueue.on("completed", (job) => {
   console.log(`Label job ${job.id} completed`);

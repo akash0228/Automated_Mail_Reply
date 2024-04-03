@@ -7,17 +7,18 @@ const { sendReply } = require("../services/GmailServices");
 //     maxRetriesPerRequest: null,
 //   });
 
-const redis = require('redis');
-const createClient = redis.createClient;
+// const redis = require('redis');
+// const createClient = redis.createClient;
 
 
-const client = createClient({
-  password: 'Rt3aekDRSkxTFtRHgf5lrlkM1F9nJsg0',
-  socket: {
-      host: 'redis-13488.c305.ap-south-1-1.ec2.cloud.redislabs.com',
-      port: 13488
-  }
-});
+// const client = createClient({
+//   password: 'Rt3aekDRSkxTFtRHgf5lrlkM1F9nJsg0',
+//   socket: {
+//       host: 'redis-13488.c305.ap-south-1-1.ec2.cloud.redislabs.com',
+//       port: 13488
+//   }
+// });
+const client=require('../config/redisConfig');
 
 const processreplyJob = async (job) => {
   

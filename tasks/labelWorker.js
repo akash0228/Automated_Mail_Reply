@@ -1,8 +1,7 @@
 const { Worker } = require("bullmq");
 const { google } = require("googleapis");
 // const Redis = require("ioredis");
-const redis = require('redis');
-const createClient = redis.createClient;
+const client=require('../config/redisConfig');
 
 const {
   getAccessToken,
@@ -24,13 +23,7 @@ const replyGenerationQueue = require("./replyGenerationQueue");
 //   maxRetriesPerRequest: null,
 // });
 
-const client = createClient({
-    password: 'Rt3aekDRSkxTFtRHgf5lrlkM1F9nJsg0',
-    socket: {
-        host: 'redis-13488.c305.ap-south-1-1.ec2.cloud.redislabs.com',
-        port: 13488
-    }
-});
+
 
 const processLabelJob = async (job) => {
   const emailData = job.data;
@@ -52,21 +45,17 @@ const processLabelJob = async (job) => {
     const labelId = await createLabel(labelName, token);
     console.log(labelId);
 
-    const addLabelRes = await addLabel(
-      messageId,
-      token,
-      labelId
-    );
+    const addLabelRes = await addLabel(messageId, token, labelId);
 
     // console.log(addLabelRes);
-    
-    replyGenerationQueue.add("replyGenerate",{
-        message:emailData.message,
-        content:decodedContent,
-        token:emailData.token,
-        labelName
+
+    replyGenerationQueue.add("replyGenerate", {
+      message: emailData.message,
+      content: decodedContent,
+      token: emailData.token,
+      labelName,
     });
-    
+
     return { success: true };
   } catch (err) {
     console.error(`Error processing label job ${job.id}: ${err.message}`);
@@ -77,7 +66,7 @@ const processLabelJob = async (job) => {
 const labelWorker = new Worker(
   "labelQueue",
   async (job) => {
-    //   console.log("new work");
+    // console.log("new work");
     try {
       await processLabelJob(job);
     } catch (err) {
