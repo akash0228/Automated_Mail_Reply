@@ -61,6 +61,9 @@ const callbackController = async (req, res) => {
   const authCode = req.query.code;
   try {
     const token = await getAccessToken(oauthServiceGmail, authCode);
+    console.log('====================================');
+    console.log(token);
+    console.log('====================================');
     setAccessToken(oauthServiceGmail, token);
     // Fetch email
     const email = await fetchUserEmail();
@@ -69,7 +72,7 @@ const callbackController = async (req, res) => {
     const user = await addUser(
       email,
       token.refresh_token,
-      token.access_token,
+      token.refresh_token,
       token.token_type,
       token.expiry_date,
       token.scope
