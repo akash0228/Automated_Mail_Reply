@@ -7,7 +7,7 @@ const {
 
 const router = require("express").Router();
 
-router.get("/test", async (req, res) => {
+router.get("/", async (req, res) => {
   res.send("Hello");
 });
 
